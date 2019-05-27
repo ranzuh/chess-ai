@@ -4,6 +4,7 @@ import piece_square_tables as pst
 
 board = chess.Board()
 
+# returns value of piece, positive for white, negative for black
 def piece_value(piece):
   if piece == None:
       return 0
@@ -22,23 +23,26 @@ def piece_value(piece):
       return 20000
   absolute_value = absolute_value(piece)
   return absolute_value if piece.color == True else -absolute_value
-  
+
+# returns evaluation for the whole board
 def evaluation(board):
   eval = 0
   for i in range(64):
     eval += piece_value(board.piece_at(i))
   return eval
 
+# random move bot
 def make_random_move(board):
   moves = list(board.legal_moves)
   random_move = random.choice(moves)
   board.push(random_move)
 
+# bot that takes piece if it can
 def calculate_best_move(board):
   moves = list(board.legal_moves)
   print(board.legal_moves)
   best_move = None
-  best_value = -9999
+  best_value = -99999
 
   for move in moves:
     board.push(move)
@@ -57,6 +61,7 @@ def calculate_best_move(board):
 alphabeta_position_count = 0
 minimax_position_count = 0
 
+# returns best minimax value for position 
 def minimax(board, depth):
   global minimax_position_count
   minimax_position_count += 1
@@ -67,24 +72,25 @@ def minimax(board, depth):
   moves = list(board.legal_moves)
 
   if board.turn == False: #black
-    best_value = -9999
+    best_value = -99999
     for move in moves:
       board.push(move)
       best_value = max(best_value, minimax(board, depth - 1))
       board.pop()
     return best_value
   else: #white
-    best_value = 9999
+    best_value = 99999
     for move in moves:
       board.push(move)
       best_value = min(best_value, minimax(board, depth - 1))
       board.pop()
     return best_value
 
+# returns best move for black, best minimax value
 def minimax_decision(board, depth):
   moves = list(board.legal_moves)
   best_move = None
-  best_value = -9999
+  best_value = -99999
 
   for move in moves:
     #print("best", best_value, best_move)
@@ -98,6 +104,7 @@ def minimax_decision(board, depth):
   
   return best_move
 
+# returns best value for position
 def alpha_beta(board, depth, a, b):
   global alphabeta_position_count
   alphabeta_position_count += 1
@@ -108,7 +115,7 @@ def alpha_beta(board, depth, a, b):
   moves = list(board.legal_moves)
 
   if board.turn == False: #black
-    best_value = -9999
+    best_value = -99999
     for move in moves:
       board.push(move)
       best_value = max(best_value, alpha_beta(board, depth - 1, a, b))
@@ -118,7 +125,7 @@ def alpha_beta(board, depth, a, b):
       a = max(a, best_value)
     return best_value
   else: #white
-    best_value = 9999
+    best_value = 99999
     for move in moves:
       board.push(move)
       best_value = min(best_value, alpha_beta(board, depth - 1, a, b))
@@ -128,15 +135,16 @@ def alpha_beta(board, depth, a, b):
       b = min(b, best_value)
     return best_value
 
+# returns best move for black 
 def alpha_beta_decision(board, depth):
   moves = list(board.legal_moves)
   best_move = None
-  best_value = -9999
+  best_value = -99999
 
   for move in moves:
     #print(board.san(best_move), best_value)
     board.push(move)
-    board_value = alpha_beta(board, depth - 1, -9999, 9999)
+    board_value = alpha_beta(board, depth - 1, -99999, 99999)
     board.pop()
     #print("candidate", board_value, move)
     if board_value >= best_value:
