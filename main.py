@@ -1,6 +1,7 @@
 import chess
 import random
 import piece_square_tables as pst
+import time
 
 board = chess.Board()
 
@@ -140,6 +141,8 @@ def alpha_beta_decision(board, depth):
   moves = list(board.legal_moves)
   best_move = None
   best_value = -99999
+  global alphabeta_position_count
+  alphabeta_position_count = 0
 
   for move in moves:
     #print(board.san(best_move), best_value)
@@ -178,8 +181,13 @@ def play():
           print("not correct san format")
     else:
       print("Computers turn")
-      computer_move = alpha_beta_decision(board, 3)
+      start_time = time.time()
+      computer_move = alpha_beta_decision(board, 4)
+      time_elapsed = time.time() - start_time
       print("Computers move:", board.san(computer_move))
+      print("Time:", time_elapsed.__round__(3), "seconds")
+      print("Nodes checked:", alphabeta_position_count)
+      print("Nodes per second:", (alphabeta_position_count / time_elapsed).__int__())
       board.push(computer_move)
 
 # board.set_fen("r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3")
