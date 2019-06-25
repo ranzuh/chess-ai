@@ -40,12 +40,10 @@ def make_random_move(board):
 
 # bot that takes piece if it can
 def calculate_best_move(board):
-  moves = list(board.legal_moves)
-  print(board.legal_moves)
   best_move = None
   best_value = -99999
 
-  for move in moves:
+  for move in board.legal_moves:
     board.push(move)
     board_value = -evaluation(board)
     print(board_value)
@@ -70,18 +68,16 @@ def minimax(board, depth):
   if depth == 0:
     return -evaluation(board)
   
-  moves = list(board.legal_moves)
-
   if board.turn == False: #black
     best_value = -99999
-    for move in moves:
+    for move in board.legal_moves:
       board.push(move)
       best_value = max(best_value, minimax(board, depth - 1))
       board.pop()
     return best_value
   else: #white
     best_value = 99999
-    for move in moves:
+    for move in board.legal_moves:
       board.push(move)
       best_value = min(best_value, minimax(board, depth - 1))
       board.pop()
@@ -89,11 +85,10 @@ def minimax(board, depth):
 
 # returns best move for black, best minimax value
 def minimax_decision(board, depth):
-  moves = list(board.legal_moves)
   best_move = None
   best_value = -99999
 
-  for move in moves:
+  for move in board.legal_moves:
     #print("best", best_value, best_move)
     board.push(move)
     board_value = minimax(board, depth - 1)
@@ -113,11 +108,9 @@ def alpha_beta(board, depth, a, b):
   if depth == 0:
     return -evaluation(board)
   
-  moves = list(board.legal_moves)
-
   if board.turn == False: #black
     best_value = -99999
-    for move in moves:
+    for move in board.legal_moves:
       board.push(move)
       best_value = max(best_value, alpha_beta(board, depth - 1, a, b))
       board.pop()
@@ -127,7 +120,7 @@ def alpha_beta(board, depth, a, b):
     return best_value
   else: #white
     best_value = 99999
-    for move in moves:
+    for move in board.legal_moves:
       board.push(move)
       best_value = min(best_value, alpha_beta(board, depth - 1, a, b))
       board.pop()
@@ -138,13 +131,12 @@ def alpha_beta(board, depth, a, b):
 
 # returns best move for black 
 def alpha_beta_decision(board, depth):
-  moves = list(board.legal_moves)
   best_move = None
   best_value = -99999
   global alphabeta_position_count
   alphabeta_position_count = 0
 
-  for move in moves:
+  for move in board.legal_moves:
     #print(board.san(best_move), best_value)
     board.push(move)
     board_value = alpha_beta(board, depth - 1, -99999, 99999)
@@ -182,7 +174,7 @@ def play():
     else:
       print("Computers turn")
       start_time = time.time()
-      computer_move = alpha_beta_decision(board, 4)
+      computer_move = alpha_beta_decision(board, 3)
       time_elapsed = time.time() - start_time
       print("Computers move:", board.san(computer_move))
       print("Time:", time_elapsed.__round__(3), "seconds")
